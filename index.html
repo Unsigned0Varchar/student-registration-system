@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A modern student registration system to add, edit, delete, and manage student records with local storage persistence." />
+  <meta name="keywords" content="student registration, school management, student records" />
+  <meta name="author" content="Student Registration System" />
+  <title>Student Registration System</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER-->
+  <header>
+    <div class="header-badge">📚 Internshala Trainings</div>
+    <h1>Student Registration<br>System</h1>
+    <p>Register, manage, and organise student records with ease. Add new students, update details, or remove records — all stored locally in your browser.</p>
+  </header>
+
+  <!--STATS ROW-->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon blue">👤</div>
+      <div class="stat-info">
+        <p>Total Students</p>
+        <strong id="statTotal">0</strong>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon cyan">🆔</div>
+      <div class="stat-info">
+        <p>Latest ID</p>
+        <strong id="statLatestId">—</strong>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <div class="stat-info">
+        <p>Active Records</p>
+        <strong id="statActive">0</strong>
+      </div>
+    </div>
+  </div>
+
+  <!--MAIN CONTENT-->
+  <main>
+
+    <!-- FORM PANEL -->
+    <section class="card form-card" aria-label="Student Registration Form">
+      <div class="card-header">
+        <div class="card-icon">✏️</div>
+        <h2>Register Student</h2>
+      </div>
+      <div class="card-body">
+        <!-- NOTE: No <form> tag used; validation handled in JS -->
+
+        <div class="field">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" placeholder="e.g. Rahul Sharma" autocomplete="off" />
+          <span class="field-error" id="errName"></span>
+        </div>
+
+        <div class="field">
+          <label for="studentId">Student ID</label>
+          <input type="text" id="studentId" placeholder="e.g. 20240101" inputmode="numeric" autocomplete="off" />
+          <span class="field-error" id="errId"></span>
+        </div>
+
+        <div class="field">
+          <label for="emailId">Email Address</label>
+          <input type="text" id="emailId" placeholder="e.g. rahul@example.com" autocomplete="off" />
+          <span class="field-error" id="errEmail"></span>
+        </div>
+
+        <div class="field">
+          <label for="contactNo">Contact Number</label>
+          <input type="text" id="contactNo" placeholder="10-digit number" inputmode="numeric" autocomplete="off" maxlength="15" />
+          <span class="field-error" id="errContact"></span>
+        </div>
+
+        <button class="btn btn-primary" id="addBtn" onclick="handleAdd()">
+          + &nbsp;Add Student
+        </button>
+        <button class="btn btn-secondary" onclick="clearForm()">
+          ✕ &nbsp;Clear Form
+        </button>
+      </div>
+    </section>
+
+    <!-- RECORDS PANEL -->
+    <section class="card records-card" aria-label="Registered Students">
+      <div class="card-header">
+        <div class="header-left">
+          <div class="card-icon">📋</div>
+          <h2>Registered Students</h2>
+          <span class="count-badge" id="recordCount">0</span>
+        </div>
+        <div class="search-wrap">
+          <!-- Search icon SVG -->
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search…" oninput="renderTable()" />
+        </div>
+      </div>
+
+      <div class="table-wrapper" id="tableWrapper">
+        <table aria-label="Student Records Table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Student Name</th>
+              <th>Student ID</th>
+              <th>Email Address</th>
+              <th>Contact No.</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+        <!-- Empty state shown when no records -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <div class="emoji">🎓</div>
+          <p>No students registered yet.<br>Use the form on the left to add a record.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!--EDIT MODAL-->
+  <div class="modal-overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Edit Student Record</h3>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="field">
+          <label for="editName">Student Name</label>
+          <input type="text" id="editName" autocomplete="off" />
+          <span class="field-error" id="editErrName"></span>
+        </div>
+
+        <div class="field">
+          <label for="editId">Student ID</label>
+          <input type="text" id="editId" autocomplete="off" inputmode="numeric" />
+          <span class="field-error" id="editErrId"></span>
+        </div>
+
+        <div class="field">
+          <label for="editEmail">Email Address</label>
+          <input type="text" id="editEmail" autocomplete="off" />
+          <span class="field-error" id="editErrEmail"></span>
+        </div>
+
+        <div class="field">
+          <label for="editContact">Contact Number</label>
+          <input type="text" id="editContact" autocomplete="off" inputmode="numeric" maxlength="15" />
+          <span class="field-error" id="editErrContact"></span>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-save" onclick="saveEdit()">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!--TOAST CONTAINER-->
+  <div id="toast-container" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
