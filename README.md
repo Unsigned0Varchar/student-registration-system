@@ -27,12 +27,14 @@ This project allows users to register and manage student records directly in the
 
 ## File Structure
 
-```
+---
+
 student-registration-system/
 │
-└── index.html       # All HTML, CSS, and JavaScript in one file
-└── README.md        # Project documentation
-```
+├── index.html    # HTML structure and semantic markup
+├── style.css     # All CSS — theme, layout, components, responsive
+├── script.js     # All JavaScript — logic, validation, LocalStorage
+└── README.md     # Project documentation
 
 > No nested folders. No build tools. No dependencies.
 
@@ -74,14 +76,14 @@ Student records are stored under the key `srs_students` as a JSON array. Data pe
 3. No installation, server, or build step required
 
 ```bash
-git clone https://github.com/your-username/student-registration-system.git
+git clone https://github.com/Unsigned0Varchar/student-registration-system.git
 cd student-registration-system
 # Open index.html in your browser
 ```
 
 ---
 
-## 📋 Assignment Coverage
+## Assignment Coverage
 
 | Task | Description                        | Marks |
 |------|------------------------------------|-------|
